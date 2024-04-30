@@ -15,7 +15,7 @@ export default function ProductCard(props) {
       <CardContent>
         <Typography variant="h6">{name}</Typography>
         <Box display="flex" justifyContent="space-between" sx={{ my: 3 }}>
-          <Chip label={price} color="success" />
+          <Chip label={`$ ${price}`} color="success" />
           <Chip label={category} color="warning" />
         </Box>
         <Button variant="contained" color="primary" fullWidth>
