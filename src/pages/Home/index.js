@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import {
@@ -12,66 +13,105 @@ import {
   Select,
   Typography,
 } from "@mui/material";
+import Header from "../../components/Header";
 import ProductCard from "../../components/ProductCard";
 
-import { getCategories } from "../../utils/api_categories";
 import { getProducts } from "../../utils/api_products";
+import { getCategories } from "../../utils/api_categories";
 
 export default function Home() {
-  const [category, setCategory] = useState("all"); // user selection
+  const navigate = useNavigate();
 
+  const [category, setCategory] = useState("all"); // user selection
+  const [page, setPage] = useState(1);
+  const perPage = 6;
+
+  const { data: products = [] } = useQuery({
+    queryKey: ["products", category, page, perPage],
+    queryFn: () => getProducts(category, page, perPage),
+  });
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
   });
 
-  const { data: products = [] } = useQuery({
-    queryKey: ["products", category],
-    queryFn: () => getProducts(category),
-  });
-
   return (
     <Container maxWidth="xl">
-      <Typography variant="h4" sx={{ textAlign: "center", my: 3 }}>
-        Welcome to My Store
-      </Typography>
-      <hr />
+      <Header />
       <Box display="flex" justifyContent="space-between" sx={{ my: 3 }}>
-        <Typography variant="h5">Products</Typography>
-        <Button variant="contained" color="success">
+        <Typography
+          variant="h5"
+          style={{
+            fontWeight: "bold",
+          }}
+        >
+          Products
+        </Typography>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => {
+            navigate("/add");
+          }}
+        >
           Add New
         </Button>
       </Box>
 
-      <FormControl sx={{ width: "150px" }}>
+      <FormControl sx={{ width: "150px", mb: 3 }}>
         <InputLabel>Category</InputLabel>
         <Select
           label="Category"
           value={category}
           onChange={(e) => {
             setCategory(e.target.value);
+            // reset to page 1 on category change for good UX
+            setPage(1);
           }}
         >
           <MenuItem value="all">All Categories</MenuItem>
-          {categories.map((category) => {
+          {categories.map((c) => {
             return (
-              <MenuItem value={category} key={category}>
-                {category}
+              <MenuItem key={c} value={c}>
+                {c}
               </MenuItem>
             );
           })}
         </Select>
       </FormControl>
 
-      <Grid container spacing={3} sx={{ mt: 0, mb: 3 }}>
+      <Grid container spacing={3} sx={{ mb: 3 }}>
         {products.map((product) => {
           return (
-            <Grid item lg={4} md={6} xs={12} key={product._id}>
-              <ProductCard product={product} setCategory={setCategory} />
+            <Grid key={product._id} item lg={4} md={6} xs={12}>
+              <ProductCard product={product} />
             </Grid>
           );
         })}
+        {products.length === 0 ? (
+          <Grid item>
+            <Typography sx={{ ml: 1 }}>No items found.</Typography>
+          </Grid>
+        ) : null}
       </Grid>
+
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ mb: 2 }}
+      >
+        <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
+          Previous
+        </Button>
+        <Typography sx={{ mx: 3 }}>Page: {page}</Typography>
+        <Button
+          disabled={products.length < perPage}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </Button>
+      </Box>
     </Container>
   );
 }
