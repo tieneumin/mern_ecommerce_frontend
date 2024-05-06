@@ -80,7 +80,7 @@ export default function Cart() {
                     </TableCell>
                     <TableCell align="right">$ {p.price}</TableCell>
                     <TableCell align="right">{p.quantity}</TableCell>
-                    <TableCell align="right">$ {total}</TableCell>
+                    <TableCell align="right">$ {total.toFixed(2)}</TableCell>
                     <TableCell align="right">
                       <Button
                         variant="contained"
@@ -94,17 +94,15 @@ export default function Cart() {
                 );
               })
             )}
-            {cart.length !== 0 ? (
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell align="right"></TableCell>
-                <TableCell align="right"></TableCell>
-                <TableCell align="right" style={{ fontWeight: "bold" }}>
-                  $ {grandTotal}
-                </TableCell>
-                <TableCell align="right"></TableCell>
-              </TableRow>
-            ) : null}
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell align="right"></TableCell>
+              <TableCell align="right"></TableCell>
+              <TableCell align="right" style={{ fontWeight: "bold" }}>
+                $ {grandTotal.toFixed(2)}
+              </TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
