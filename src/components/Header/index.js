@@ -14,7 +14,7 @@ export default function Header({ type }) {
       >
         {type === "cart" ? "Cart" : "Welcome to My Store"}
       </Typography>
-      <Box display="flex" justifyContent="center" sx={{ gap: 2, mb: 3 }}>
+      <Box display="flex" justifyContent="center" sx={{ gap: 2 }}>
         <Button variant="contained" component={Link} to="/">
           Home
         </Button>
@@ -22,7 +22,7 @@ export default function Header({ type }) {
           Cart
         </Button>
       </Box>
-      <Divider />
+      <Divider sx={{ my: 3 }} />
     </>
   );
 }

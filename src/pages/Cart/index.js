@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 
 import {
+  Box,
   Button,
   Container,
   Paper,
@@ -50,15 +51,23 @@ export default function Cart() {
   return (
     <Container maxWidth="xl">
       <Header type="cart" />
-      <TableContainer component={Paper} sx={{ mt: 5 }}>
+      <TableContainer component={Paper} sx={{ my: 5 }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Product</TableCell>
-              <TableCell align="right">Price</TableCell>
-              <TableCell align="right">Quantity</TableCell>
-              <TableCell align="right">Total</TableCell>
-              <TableCell align="right">Action</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Product</TableCell>
+              <TableCell align="right" style={{ fontWeight: "bold" }}>
+                Price
+              </TableCell>
+              <TableCell align="right" style={{ fontWeight: "bold" }}>
+                Quantity
+              </TableCell>
+              <TableCell align="right" style={{ fontWeight: "bold" }}>
+                Total
+              </TableCell>
+              <TableCell align="right" style={{ fontWeight: "bold" }}>
+                Action
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -106,6 +115,11 @@ export default function Cart() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Box display="flex" justifyContent="right">
+        <Button variant="contained" disabled={cart.length === 0}>
+          Checkout
+        </Button>
+      </Box>
     </Container>
   );
 }

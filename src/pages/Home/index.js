@@ -38,7 +38,7 @@ export default function Home() {
   return (
     <Container maxWidth="xl">
       <Header />
-      <Box display="flex" justifyContent="space-between" sx={{ my: 3 }}>
+      <Box display="flex" justifyContent="space-between">
         <Typography
           variant="h5"
           style={{
@@ -58,7 +58,7 @@ export default function Home() {
         </Button>
       </Box>
 
-      <FormControl sx={{ width: "150px", mb: 3 }}>
+      <FormControl sx={{ width: "150px", my: 3 }}>
         <InputLabel>Category</InputLabel>
         <Select
           label="Category"
