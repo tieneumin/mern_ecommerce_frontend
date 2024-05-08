@@ -16,8 +16,8 @@ import {
 import Header from "../../components/Header";
 import ProductCard from "../../components/ProductCard";
 
-import { getProducts } from "../../utils/api_products";
 import { getCategories } from "../../utils/api_categories";
+import { getProducts } from "../../utils/api_products";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -26,13 +26,13 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const perPage = 6;
 
-  const { data: products = [] } = useQuery({
-    queryKey: ["products", category, page, perPage],
-    queryFn: () => getProducts(category, page, perPage),
-  });
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
+  });
+  const { data: products = [] } = useQuery({
+    queryKey: ["products", category, page, perPage],
+    queryFn: () => getProducts(category, page, perPage),
   });
 
   return (
@@ -54,7 +54,7 @@ export default function Home() {
             navigate("/add");
           }}
         >
-          Add New
+          Add Product
         </Button>
       </Box>
 
@@ -80,7 +80,7 @@ export default function Home() {
         </Select>
       </FormControl>
 
-      <Grid container spacing={3} sx={{ mb: 3 }}>
+      <Grid container spacing={3}>
         {products.map((product) => {
           return (
             <Grid key={product._id} item lg={4} md={6} xs={12}>
@@ -90,7 +90,7 @@ export default function Home() {
         })}
         {products.length === 0 ? (
           <Grid item>
-            <Typography sx={{ ml: 1 }}>No items found.</Typography>
+            <Typography sx={{ ml: 1 }}>No products found.</Typography>
           </Grid>
         ) : null}
       </Grid>
@@ -99,12 +99,12 @@ export default function Home() {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        sx={{ mb: 2 }}
+        sx={{ my: 3, gap: 3 }}
       >
         <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
           Previous
         </Button>
-        <Typography sx={{ mx: 3 }}>Page: {page}</Typography>
+        <Typography>Page: {page}</Typography>
         <Button
           disabled={products.length < perPage}
           onClick={() => setPage(page + 1)}

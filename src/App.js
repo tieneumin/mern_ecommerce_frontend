@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import ProductAdd from "./pages/ProductAdd";
 import ProductEdit from "./pages/ProductEdit";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -22,6 +24,8 @@ export default function App() {
             <Route path="/add" element={<ProductAdd />} />
             <Route path="/products/:id" element={<ProductEdit />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/orders" element={<Orders />} />
           </Routes>
         </BrowserRouter>
       </SnackbarProvider>

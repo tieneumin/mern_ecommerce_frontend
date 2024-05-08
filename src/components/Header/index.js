@@ -1,7 +1,18 @@
+import { Link, useLocation } from "react-router-dom";
 import { Box, Button, Divider, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
 
-export default function Header({ type }) {
+export default function Header() {
+  const location = useLocation();
+
+  let pageTitle = "Welcome to My Store";
+  if (location.pathname === "/cart") {
+    pageTitle = "Cart";
+  } else if (location.pathname === "/checkout") {
+    pageTitle = "Checkout";
+  } else if (location.pathname === "/orders") {
+    pageTitle = "My Orders";
+  }
+
   return (
     <>
       <Typography
@@ -12,14 +23,46 @@ export default function Header({ type }) {
           my: 3,
         }}
       >
-        {type === "cart" ? "Cart" : "Welcome to My Store"}
+        {pageTitle}
       </Typography>
       <Box display="flex" justifyContent="center" sx={{ gap: 2 }}>
-        <Button variant="contained" component={Link} to="/">
+        <Button
+          variant="contained"
+          component={Link}
+          to="/"
+          style={{
+            textTransform: "capitalize",
+            color: location.pathname === "/" ? "white" : "#0288d1",
+            backgroundColor: location.pathname === "/" ? "#0288d1" : "white",
+          }}
+        >
           Home
         </Button>
-        <Button variant="contained" component={Link} to="/cart">
+        <Button
+          variant="contained"
+          component={Link}
+          to="/cart"
+          style={{
+            textTransform: "capitalize",
+            color: location.pathname === "/cart" ? "white" : "#0288d1",
+            backgroundColor:
+              location.pathname === "/cart" ? "#0288d1" : "white",
+          }}
+        >
           Cart
+        </Button>
+        <Button
+          variant="contained"
+          component={Link}
+          to="/orders"
+          style={{
+            textTransform: "capitalize",
+            color: location.pathname === "/orders" ? "white" : "#0288d1",
+            backgroundColor:
+              location.pathname === "/orders" ? "#0288d1" : "white",
+          }}
+        >
+          My Orders
         </Button>
       </Box>
       <Divider sx={{ my: 3 }} />

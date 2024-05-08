@@ -26,7 +26,7 @@ export default function ProductEdit() {
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
 
-  // get data from /products/:id
+  // GET data from /products/:id
   const {
     data: product,
     error,
@@ -35,12 +35,12 @@ export default function ProductEdit() {
     queryKey: ["product", id],
     queryFn: () => getProduct(id),
   });
-  // console.log(data);
+  // console.log(product);
   // console.log(error);
 
   // set useState values after API fetches data
   useEffect(() => {
-    // check for undefined (see console.log(data))
+    // check for undefined (see console.log(product))
     if (product) {
       setName(product.name);
       setDescription(product.description);
@@ -72,11 +72,11 @@ export default function ProductEdit() {
     event.preventDefault();
     // trigger mutation to call PUT API
     updateProductMutation.mutate({
-      id: id,
-      name: name,
-      description: description,
-      price: price,
-      category: category,
+      id,
+      name,
+      description,
+      price,
+      category,
     });
   };
 
@@ -105,37 +105,37 @@ export default function ProductEdit() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                label="Name"
-                variant="outlined"
                 fullWidth
+                variant="outlined"
+                label="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Description"
-                variant="outlined"
                 fullWidth
+                variant="outlined"
+                label="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Price"
-                variant="outlined"
                 fullWidth
+                variant="outlined"
                 type="number"
+                label="Price"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Category"
-                variant="outlined"
                 fullWidth
+                variant="outlined"
+                label="Category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               />

@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 
@@ -15,22 +16,23 @@ import {
 } from "@mui/material";
 import Header from "../../components/Header";
 
-import { getCart, deleteCartItem } from "../../utils/api_cart";
+import { getCart, removeCartItem } from "../../utils/api_cart";
 
 export default function Cart() {
+  let grandTotal = 0;
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
-  let grandTotal = 0;
 
   const { data: cart = [] } = useQuery({
     queryKey: ["cart"],
     queryFn: getCart,
   });
 
-  const deleteCartItemMutation = useMutation({
-    mutationFn: deleteCartItem,
+  const removeCartItemMutation = useMutation({
+    mutationFn: removeCartItem,
     onSuccess: () => {
-      enqueueSnackbar("Item removed.", {
+      enqueueSnackbar("Item removed from cart.", {
         variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["cart"] });
@@ -41,17 +43,17 @@ export default function Cart() {
       });
     },
   });
-  const deleteCartItemHandle = (id) => {
+  const removeCartItemHandle = (id) => {
     const confirm = window.confirm("Remove cart item?");
     if (confirm) {
-      deleteCartItemMutation.mutate(id);
+      removeCartItemMutation.mutate(id);
     }
   };
 
   return (
     <Container maxWidth="xl">
-      <Header type="cart" />
-      <TableContainer component={Paper} sx={{ my: 5 }}>
+      <Header />
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -73,28 +75,27 @@ export default function Cart() {
           <TableBody>
             {cart.length === 0 ? (
               <TableRow>
-                <TableCell>No product added yet!</TableCell>
+                <TableCell colSpan={5}>Cart is empty.</TableCell>
               </TableRow>
             ) : (
-              cart.map((p) => {
-                const total = p.price * p.quantity;
+              cart.map((i) => {
+                const total = i.price * i.quantity;
                 grandTotal += total;
+
                 return (
                   <TableRow
-                    key={p._id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    key={i._id}
+                    // sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row">
-                      {p.name}
-                    </TableCell>
-                    <TableCell align="right">$ {p.price}</TableCell>
-                    <TableCell align="right">{p.quantity}</TableCell>
+                    <TableCell>{i.name}</TableCell>
+                    <TableCell align="right">$ {i.price}</TableCell>
+                    <TableCell align="right">{i.quantity}</TableCell>
                     <TableCell align="right">$ {total.toFixed(2)}</TableCell>
                     <TableCell align="right">
                       <Button
                         variant="contained"
                         color="error"
-                        onClick={() => deleteCartItemHandle(p._id)}
+                        onClick={() => removeCartItemHandle(i._id)}
                       >
                         Remove
                       </Button>
@@ -104,19 +105,27 @@ export default function Cart() {
               })
             )}
             <TableRow>
-              <TableCell></TableCell>
-              <TableCell align="right"></TableCell>
-              <TableCell align="right"></TableCell>
-              <TableCell align="right" style={{ fontWeight: "bold" }}>
+              <TableCell
+                colSpan={4}
+                align="right"
+                style={{ fontWeight: "bold" }}
+              >
                 $ {grandTotal.toFixed(2)}
               </TableCell>
-              <TableCell align="right"></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
-      <Box display="flex" justifyContent="right">
-        <Button variant="contained" disabled={cart.length === 0}>
+      <Box textAlign="right" sx={{ my: 3 }}>
+        <Button
+          variant="contained"
+          disabled={cart.length === 0}
+          onClick={() => {
+            navigate("/checkout");
+          }}
+          style={{ marginLeft: "auto" }}
+        >
           Checkout
         </Button>
       </Box>

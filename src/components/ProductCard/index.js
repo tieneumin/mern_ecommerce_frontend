@@ -59,11 +59,6 @@ export default function ProductCard({ product }) {
       });
     },
   });
-  const addCartItemHandle = (event) => {
-    event.preventDefault();
-    // trigger mutation to call POST API
-    addCartItemMutation.mutate(product);
-  };
 
   return (
     <Card>
@@ -84,7 +79,9 @@ export default function ProductCard({ product }) {
           fullWidth
           variant="contained"
           color="info"
-          onClick={addCartItemHandle}
+          onClick={() => {
+            addCartItemMutation.mutate(product);
+          }}
         >
           Add To Cart
         </Button>

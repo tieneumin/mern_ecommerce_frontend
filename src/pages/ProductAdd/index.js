@@ -48,14 +48,14 @@ export default function ProductAdd() {
     },
   });
 
-  const addProductHandle = (event) => {
-    event.preventDefault();
+  const addProductHandle = (e) => {
+    e.preventDefault();
     // trigger mutation to call POST API
     addProductMutation.mutate({
-      name: name,
-      description: description,
-      price: price,
-      category: category,
+      name,
+      description,
+      price,
+      category,
     });
   };
 
@@ -75,43 +75,43 @@ export default function ProductAdd() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                label="Name"
-                variant="outlined"
                 fullWidth
+                variant="outlined"
+                label="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Description"
-                variant="outlined"
                 fullWidth
+                variant="outlined"
+                label="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Price"
-                variant="outlined"
                 fullWidth
+                variant="outlined"
                 type="number"
+                label="Price"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Category"
-                variant="outlined"
                 fullWidth
+                variant="outlined"
+                label="Category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
-              <Button variant="contained" fullWidth onClick={addProductHandle}>
+              <Button fullWidth variant="contained" onClick={addProductHandle}>
                 Create
               </Button>
             </Grid>
