@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 
@@ -13,11 +12,10 @@ import {
 } from "@mui/material";
 import Header from "../../components/Header";
 
-import { getCart } from "../../utils/api_cart";
+import { getCart, emptyCart } from "../../utils/api_cart";
 import { addOrder } from "../../utils/api_orders";
 
 export default function Checkout() {
-  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   const [name, setName] = useState("");
@@ -38,8 +36,11 @@ export default function Checkout() {
 
   const addOrderMutation = useMutation({
     mutationFn: addOrder,
-    onSuccess: () => {
-      navigate("/orders");
+    onSuccess: (data) => {
+      // remove items from cart
+      emptyCart();
+      // get billplz url (see backend addOrder), redirect user to payment page
+      window.location.href = data.billplzUrl;
     },
     onError: (error) => {
       enqueueSnackbar(error.response.data.message, {

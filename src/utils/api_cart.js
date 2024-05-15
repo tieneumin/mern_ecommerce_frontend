@@ -11,7 +11,8 @@ export const addCartItem = (product) => {
 };
 
 export const getCart = () => {
-  return JSON.parse(localStorage.getItem("cart"));
+  const cart = JSON.parse(localStorage.getItem("cart"));
+  return cart ? cart : [];
 };
 
 export const removeCartItem = (id) => {
@@ -19,3 +20,7 @@ export const removeCartItem = (id) => {
   const newCart = cart.filter((i) => i._id !== id);
   localStorage.setItem("cart", JSON.stringify(newCart));
 };
+
+export function emptyCart() {
+  localStorage.removeItem("cart");
+}

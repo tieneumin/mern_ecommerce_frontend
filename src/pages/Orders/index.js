@@ -55,7 +55,7 @@ export default function Orders() {
       enqueueSnackbar("Order status updated.", {
         variant: "success",
       });
-      queryClient.setQueryData({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: (error) => {
       enqueueSnackbar(error.response.data.message, {
@@ -87,55 +87,55 @@ export default function Orders() {
           <TableBody>
             {orders.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6}>No orders exist.</TableCell>
+                <TableCell colSpan={6} align="center">
+                  No orders exist.
+                </TableCell>
               </TableRow>
             ) : (
-              orders.map((o) => {
-                return (
-                  <TableRow
-                    key={o._id}
-                    // sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell>
-                      <Typography>{o.customerName}</Typography>
-                      <Typography>({o.customerEmail})</Typography>
-                    </TableCell>
-                    <TableCell>
-                      {o.products.map((p) => (
-                        <Typography
-                          key={p._id}
-                        >{`${p.name} (${p.quantity})`}</Typography>
-                      ))}
-                    </TableCell>
-                    <TableCell>{o.totalPrice}</TableCell>
-                    <TableCell>
-                      <Select
-                        sx={{ width: "125px" }}
-                        value={o.status}
-                        disabled={o.status === "pending"}
-                        onChange={(e) => updateOrderHandle(o, e.target.value)}
+              orders.map((o) => (
+                <TableRow
+                  key={o._id}
+                  // sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell>
+                    <Typography>{o.customerName}</Typography>
+                    <Typography>({o.customerEmail})</Typography>
+                  </TableCell>
+                  <TableCell>
+                    {o.products.map((p) => (
+                      <Typography
+                        key={p._id}
+                      >{`${p.name} (${p.quantity})`}</Typography>
+                    ))}
+                  </TableCell>
+                  <TableCell>{o.totalPrice}</TableCell>
+                  <TableCell>
+                    <Select
+                      sx={{ width: "125px" }}
+                      value={o.status}
+                      disabled={o.status === "pending"}
+                      onChange={(e) => updateOrderHandle(o, e.target.value)}
+                    >
+                      <MenuItem value="pending">Pending</MenuItem>
+                      <MenuItem value="paid">Paid</MenuItem>
+                      <MenuItem value="failed">Failed</MenuItem>
+                      <MenuItem value="completed">Completed</MenuItem>
+                    </Select>
+                  </TableCell>
+                  <TableCell>{o.paidAt}</TableCell>
+                  <TableCell align="right">
+                    {o.status !== "pending" ? (
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => deleteOrderHandle(o._id)}
                       >
-                        <MenuItem value="pending">Pending</MenuItem>
-                        <MenuItem value="paid">Paid</MenuItem>
-                        <MenuItem value="failed">Failed</MenuItem>
-                        <MenuItem value="completed">Completed</MenuItem>
-                      </Select>
-                    </TableCell>
-                    <TableCell>{o.paidAt}</TableCell>
-                    <TableCell align="right">
-                      {o.status !== "pending" ? (
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          onClick={() => deleteOrderHandle(o._id)}
-                        >
-                          Delete
-                        </Button>
-                      ) : null}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
+                        Delete
+                      </Button>
+                    ) : null}
+                  </TableCell>
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>

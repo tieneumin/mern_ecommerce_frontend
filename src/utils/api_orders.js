@@ -29,7 +29,7 @@ export const addOrder = async (data) => {
 };
 
 export const updateOrder = async (data) => {
-  console.log(data);
+  // console.log(data);
   const res = await axios.put(
     `${url}/orders/${data._id}`, // PUT API URL
     JSON.stringify(data), // API-bound JSON-format data
@@ -39,6 +39,7 @@ export const updateOrder = async (data) => {
       },
     }
   );
+  // console.log(res.data);
   return res.data;
 };
 

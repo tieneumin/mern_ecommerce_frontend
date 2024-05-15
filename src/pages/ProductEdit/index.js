@@ -15,6 +15,7 @@ import {
 import Header from "../../components/Header";
 
 import { getProduct, updateProduct } from "../../utils/api_products";
+import { uploadImage } from "../../utils/api_images";
 
 export default function ProductEdit() {
   const { id } = useParams();
@@ -25,6 +26,7 @@ export default function ProductEdit() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
+  const [image, setImage] = useState(null);
 
   // GET data from /products/:id
   const {
@@ -46,6 +48,7 @@ export default function ProductEdit() {
       setDescription(product.description);
       setPrice(product.price);
       setCategory(product.category);
+      setImage(product.image ? product.image : "");
     }
   }, [product]);
 
@@ -67,7 +70,6 @@ export default function ProductEdit() {
       });
     },
   });
-
   const updateProductHandle = (event) => {
     event.preventDefault();
     // trigger mutation to call PUT API
@@ -77,7 +79,26 @@ export default function ProductEdit() {
       description,
       price,
       category,
+      image,
     });
+  };
+
+  // upload image mutation
+  const uploadImageMutation = useMutation({
+    mutationFn: uploadImage,
+    onSuccess: (data) => {
+      setImage(data.image_url);
+    },
+    onError: (error) => {
+      // error message
+      enqueueSnackbar(error.response.data.message, {
+        variant: "error",
+      });
+    },
+  });
+  const uploadImageHandle = (e) => {
+    // console.log(e.target.files[0]);
+    uploadImageMutation.mutate(e.target.files[0]);
   };
 
   // if API hasn't returned
@@ -139,6 +160,26 @@ export default function ProductEdit() {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               />
+            </Grid>
+            <Grid item xs={12}>
+              {image !== "" ? (
+                <>
+                  <div>
+                    <img
+                      src={"http://localhost:5000/" + image}
+                      width="300px"
+                      height="300px"
+                    />
+                  </div>
+                  <Button onClick={() => setImage("")}>Remove Image</Button>
+                </>
+              ) : (
+                <input
+                  type="file"
+                  multiple={false}
+                  onChange={uploadImageHandle}
+                />
+              )}
             </Grid>
             <Grid item xs={12}>
               <Button

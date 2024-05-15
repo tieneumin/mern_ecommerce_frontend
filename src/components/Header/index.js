@@ -4,13 +4,25 @@ import { Box, Button, Divider, Typography } from "@mui/material";
 export default function Header() {
   const location = useLocation();
 
-  let pageTitle = "Welcome to My Store";
-  if (location.pathname === "/cart") {
-    pageTitle = "Cart";
-  } else if (location.pathname === "/checkout") {
-    pageTitle = "Checkout";
-  } else if (location.pathname === "/orders") {
-    pageTitle = "My Orders";
+  let pageTitle;
+  switch (location.pathname) {
+    case "/cart":
+      pageTitle = "Cart";
+      break;
+    case "/checkout":
+      pageTitle = "Checkout";
+      break;
+    case "/orders":
+      pageTitle = "My Orders";
+      break;
+    case "/login":
+      pageTitle = "Login to Your Account";
+      break;
+    case "/signup":
+      pageTitle = "Create a New Account ";
+      break;
+    default:
+      pageTitle = "Welcome to My Store";
   }
 
   return (
@@ -63,6 +75,32 @@ export default function Header() {
           }}
         >
           My Orders
+        </Button>
+        <Button
+          variant="contained"
+          component={Link}
+          to="/login"
+          style={{
+            textTransform: "capitalize",
+            color: location.pathname === "/login" ? "white" : "#0288d1",
+            backgroundColor:
+              location.pathname === "/login" ? "#0288d1" : "white",
+          }}
+        >
+          Login
+        </Button>
+        <Button
+          variant="contained"
+          component={Link}
+          to="/signup"
+          style={{
+            textTransform: "capitalize",
+            color: location.pathname === "/signup" ? "white" : "#0288d1",
+            backgroundColor:
+              location.pathname === "/signup" ? "#0288d1" : "white",
+          }}
+        >
+          Sign Up
         </Button>
       </Box>
       <Divider sx={{ my: 3 }} />

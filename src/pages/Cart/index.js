@@ -32,7 +32,7 @@ export default function Cart() {
   const removeCartItemMutation = useMutation({
     mutationFn: removeCartItem,
     onSuccess: () => {
-      enqueueSnackbar("Item removed from cart.", {
+      enqueueSnackbar("Item removed.", {
         variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["cart"] });
@@ -44,7 +44,7 @@ export default function Cart() {
     },
   });
   const removeCartItemHandle = (id) => {
-    const confirm = window.confirm("Remove cart item?");
+    const confirm = window.confirm("Remove item from cart?");
     if (confirm) {
       removeCartItemMutation.mutate(id);
     }
@@ -75,7 +75,9 @@ export default function Cart() {
           <TableBody>
             {cart.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5}>Cart is empty.</TableCell>
+                <TableCell colSpan={5} align="center">
+                  Cart is empty.
+                </TableCell>
               </TableRow>
             ) : (
               cart.map((i) => {

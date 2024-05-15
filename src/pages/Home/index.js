@@ -34,6 +34,7 @@ export default function Home() {
     queryKey: ["products", category, page, perPage],
     queryFn: () => getProducts(category, page, perPage),
   });
+  // console.log(products);
 
   return (
     <Container maxWidth="xl">
