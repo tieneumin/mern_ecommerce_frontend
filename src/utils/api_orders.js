@@ -2,16 +2,12 @@ import axios from "axios";
 
 const url = "http://localhost:5000";
 
-export const getOrders = async () => {
-  // const params = {
-  //   page,
-  //   perPage,
-  // };
-  // if (category !== "all") params.category = category; // ?category={category}
-  // console.log(params.category);
-  // const query = new URLSearchParams(params);
-  // const res = await axios.get(`${url}/orders?${query.toString()}`);
-  const res = await axios.get(`${url}/orders`);
+export const getOrders = async (token) => {
+  const res = await axios.get(`${url}/orders`, {
+    headers: {
+      Authorization: "Bearer " + token, // include token to API
+    },
+  });
   return res.data;
 };
 
@@ -22,6 +18,7 @@ export const addOrder = async (data) => {
     {
       headers: {
         "Content-Type": "application/json", // tells API data sent is JSON
+        Authorization: "Bearer " + data.token,
       },
     }
   );
@@ -36,6 +33,7 @@ export const updateOrder = async (data) => {
     {
       headers: {
         "Content-Type": "application/json", // tells API data sent is JSON
+        Authorization: "Bearer " + data.token,
       },
     }
   );
@@ -43,7 +41,11 @@ export const updateOrder = async (data) => {
   return res.data;
 };
 
-export const deleteOrder = async (id) => {
-  const res = await axios.delete(`${url}/orders/${id}`);
+export const deleteOrder = async (data) => {
+  const res = await axios.delete(`${url}/orders/${data._id}`, {
+    headers: {
+      Authorization: "Bearer " + data.token,
+    },
+  });
   return res.data;
 };

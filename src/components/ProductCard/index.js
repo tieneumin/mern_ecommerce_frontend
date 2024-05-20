@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
+import { useCookies } from "react-cookie";
 
 import {
   Box,
@@ -15,7 +16,10 @@ import { deleteProduct } from "../../utils/api_products";
 import { addCartItem } from "../../utils/api_cart";
 
 export default function ProductCard({ product }) {
-  const { _id, name, price, category } = product;
+  const { _id, name, price, category, image } = product;
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { role, token } = currentUser;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
@@ -40,7 +44,10 @@ export default function ProductCard({ product }) {
     event.preventDefault();
     const confirm = window.confirm("Delete product from store?");
     if (confirm) {
-      deleteProductMutation.mutate(_id);
+      deleteProductMutation.mutate({
+        _id,
+        token,
+      });
     }
   };
 
@@ -63,6 +70,13 @@ export default function ProductCard({ product }) {
   return (
     <Card>
       <CardContent>
+        <img
+          src={
+            "http://localhost:5000/" +
+            (image && image !== "" ? image : "uploads/defaultImage.png")
+          }
+          width="100%"
+        />
         <Typography
           variant="h6"
           style={{
@@ -80,30 +94,36 @@ export default function ProductCard({ product }) {
           variant="contained"
           color="info"
           onClick={() => {
-            addCartItemMutation.mutate(product);
+            // 0, false, undefined, null
+            if (currentUser.email) {
+              addCartItemMutation.mutate(product);
+            } else {
+              enqueueSnackbar("Please login to add to cart.");
+            }
           }}
         >
           Add To Cart
         </Button>
-        {/* user === "admin" if-statement goes here */}
-        <Box display="flex" justifyContent="space-between" sx={{ mt: 3 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              navigate(`/products/${_id}`);
-            }}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={deleteProductHandle}
-          >
-            Delete
-          </Button>
-        </Box>
+        {role && role === "admin" ? (
+          <Box display="flex" justifyContent="space-between" sx={{ mt: 3 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                navigate(`/products/${_id}`);
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={deleteProductHandle}
+            >
+              Delete
+            </Button>
+          </Box>
+        ) : null}
       </CardContent>
     </Card>
   );

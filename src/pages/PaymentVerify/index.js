@@ -14,10 +14,10 @@ export default function PaymentVerify() {
   const billplzPaidAt = searchParams.get("billplz[paid_at]");
   const billplzSignature = searchParams.get("billplz[x_signature]");
 
-  console.log(billplzId);
-  console.log(billplzPaid);
-  console.log(billplzPaidAt);
-  console.log(billplzSignature);
+  // console.log(billplzId);
+  // console.log(billplzPaid);
+  // console.log(billplzPaidAt);
+  // console.log(billplzSignature);
 
   useEffect(() => {
     // trigger payment verification mutation on page load

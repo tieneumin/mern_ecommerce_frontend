@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
+import { useCookies } from "react-cookie";
 
 import {
   Box,
@@ -16,6 +17,9 @@ import { getCart, emptyCart } from "../../utils/api_cart";
 import { addOrder } from "../../utils/api_orders";
 
 export default function Checkout() {
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { token } = currentUser;
   const { enqueueSnackbar } = useSnackbar();
 
   const [name, setName] = useState("");
@@ -66,6 +70,7 @@ export default function Checkout() {
         customerEmail: email,
         products: cart,
         totalPrice: calculateTotal(),
+        token,
       });
     }
   };

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
 
 import {
   Box,
@@ -20,6 +21,9 @@ import { getCategories } from "../../utils/api_categories";
 import { getProducts } from "../../utils/api_products";
 
 export default function Home() {
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { role } = currentUser;
   const navigate = useNavigate();
 
   const [category, setCategory] = useState("all"); // user selection
@@ -48,15 +52,17 @@ export default function Home() {
         >
           Products
         </Typography>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => {
-            navigate("/add");
-          }}
-        >
-          Add Product
-        </Button>
+        {role && role === "admin" ? (
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              navigate("/add");
+            }}
+          >
+            Add Product
+          </Button>
+        ) : null}
       </Box>
 
       <FormControl sx={{ width: "150px", my: 3 }}>

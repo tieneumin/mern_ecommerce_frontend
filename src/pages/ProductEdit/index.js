@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
+import { useCookies } from "react-cookie";
 
 import {
   Button,
@@ -20,6 +21,9 @@ import { uploadImage } from "../../utils/api_images";
 export default function ProductEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { token } = currentUser;
   const { enqueueSnackbar } = useSnackbar();
 
   const [name, setName] = useState("");
@@ -80,6 +84,7 @@ export default function ProductEdit() {
       price,
       category,
       image,
+      token, // credentials prevent URL spoof
     });
   };
 

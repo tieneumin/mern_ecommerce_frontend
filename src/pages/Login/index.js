@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
+import { useCookies } from "react-cookie";
 
 import {
   Button,
@@ -19,6 +20,7 @@ import { loginUser } from "../../utils/api_auth";
 export default function Login() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const [cookies, setCookie] = useCookies(["currentUser"]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +28,10 @@ export default function Login() {
   const loginMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      console.log(data);
+      // save current login details in cookies
+      setCookie("currentUser", data, {
+        maxAge: 60 * 60 * 24 * 30, // in seconds
+      });
       enqueueSnackbar("Login successful.", {
         variant: "success",
       });
@@ -40,12 +45,16 @@ export default function Login() {
   });
 
   const loginHandle = (e) => {
-    e.preventDefault();
-    // form checking
-    loginMutation.mutate({
-      email,
-      password,
-    });
+    if (email === "" || password === "") {
+      enqueueSnackbar("All fields are required.", {
+        variant: "error",
+      });
+    } else {
+      loginMutation.mutate({
+        email,
+        password,
+      });
+    }
   };
 
   return (

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
+import { useCookies } from "react-cookie";
 
 import {
   Button,
@@ -18,6 +19,7 @@ import { signUpUser } from "../../utils/api_auth";
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies(["currentUser"]);
   const { enqueueSnackbar } = useSnackbar();
 
   const [name, setName] = useState("");
@@ -28,14 +30,17 @@ export default function SignUp() {
   const signUpMutation = useMutation({
     mutationFn: signUpUser,
     onSuccess: (data) => {
-      console.log(data);
-      enqueueSnackbar("Sign up successful.", {
+      // save current login details in cookies i.e. auto login
+      setCookie("currentUser", data, {
+        maxAge: 60 * 60 * 24 * 30, // in seconds
+      });
+      enqueueSnackbar("Account created.", {
         variant: "success",
       });
-      navigate("/login");
+      navigate("/");
     },
     onError: (error) => {
-      console.log(error);
+      // console.log(error);
       enqueueSnackbar(error.response.data.message, {
         variant: "error",
       });

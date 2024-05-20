@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
+import { useCookies } from "react-cookie";
 
 import {
   Button,
@@ -18,6 +19,9 @@ import { addProduct } from "../../utils/api_products";
 
 export default function ProductAdd() {
   const navigate = useNavigate();
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { token } = currentUser;
   const { enqueueSnackbar } = useSnackbar();
 
   const [name, setName] = useState("");
@@ -56,6 +60,7 @@ export default function ProductAdd() {
       description,
       price,
       category,
+      token, // credentials prevent URL spoof
     });
   };
 
