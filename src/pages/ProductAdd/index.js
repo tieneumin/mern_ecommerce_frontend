@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { useCookies } from "react-cookie";
 
@@ -9,13 +9,18 @@ import {
   Card,
   CardContent,
   Container,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import Header from "../../components/Header";
 
 import { addProduct } from "../../utils/api_products";
+import { getCategories } from "../../utils/api_categories";
 
 export default function ProductAdd() {
   const navigate = useNavigate();
@@ -28,6 +33,12 @@ export default function ProductAdd() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
+
+  // load the categories
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories(),
+  });
 
   // POST API mutation
   const addProductMutation = useMutation({
@@ -107,13 +118,35 @@ export default function ProductAdd() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+              {/* <TextField
                 fullWidth
                 variant="outlined"
                 label="Category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-              />
+              /> */}
+              <FormControl
+                sx={{ marginTop: "10px", width: "200px", marginLeft: "10px" }}
+              >
+                <InputLabel id="product-select-label">Category</InputLabel>
+                <Select
+                  labelId="product-select-label"
+                  id="product-select"
+                  label="Category"
+                  value={category}
+                  onChange={(event) => {
+                    setCategory(event.target.value);
+                  }}
+                >
+                  {categories.map((category) => {
+                    return (
+                      <MenuItem key={category._id} value={category._id}>
+                        {category.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <Button fullWidth variant="contained" onClick={addProductHandle}>
