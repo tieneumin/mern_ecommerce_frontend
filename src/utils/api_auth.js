@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000";
+import { url } from "./data";
 
 export const loginUser = async (data) => {
   // console.log(data);

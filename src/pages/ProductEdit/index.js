@@ -9,13 +9,18 @@ import {
   Card,
   CardContent,
   Container,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import Header from "../../components/Header";
 
 import { getProduct, updateProduct } from "../../utils/api_products";
+import { getCategories } from "../../utils/api_categories";
 import { uploadImage } from "../../utils/api_images";
 
 export default function ProductEdit() {
@@ -43,6 +48,11 @@ export default function ProductEdit() {
   });
   // console.log(product);
   // console.log(error);
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories(),
+  });
 
   // set useState values after API fetches data
   useEffect(() => {
@@ -158,13 +168,26 @@ export default function ProductEdit() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              />
+              <FormControl sx={{ width: "150px", my: 3 }}>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  variant="outlined"
+                  label="Category"
+                  value={category}
+                  onChange={(event) => {
+                    setCategory(event.target.value);
+                  }}
+                >
+                  <MenuItem value="">Select A Category</MenuItem>
+                  {categories.map((category) => {
+                    return (
+                      <MenuItem key={category._id} value={category._id}>
+                        {category.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               {image !== "" ? (

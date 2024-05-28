@@ -7,6 +7,10 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   Paper,
   Table,
@@ -35,6 +39,9 @@ export default function Categories() {
   const { enqueueSnackbar } = useSnackbar();
 
   const [name, setName] = useState("");
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [editCategoryName, setEditCategoryName] = useState("");
+  const [editCategoryID, setEditCategoryID] = useState("");
 
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
@@ -94,6 +101,8 @@ export default function Categories() {
         variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      // close modal
+      setOpenEditModal(false);
     },
     onError: (error) => {
       enqueueSnackbar(error.response.data.message, {
@@ -101,9 +110,6 @@ export default function Categories() {
       });
     },
   });
-  const updateCategoryHandle = (_id, name) => {
-    updateCategoryMutation.mutate({ _id, name, token });
-  };
 
   return (
     <Container>
@@ -154,12 +160,19 @@ export default function Categories() {
                   key={c._id}
                   // sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell style={{ width: "70%" }}>{c.name}</TableCell>
+                  <TableCell>{c.name}</TableCell>
                   <TableCell>
                     <Box display="flex" sx={{ gap: 1 }}>
                       <Button
                         variant="contained"
-                        onClick={() => updateCategoryHandle(c._id)}
+                        onClick={() => {
+                          // open edit modal
+                          setOpenEditModal(true);
+                          // set edit field value to corresponding row value
+                          setEditCategoryName(c.name);
+                          // set edit category id
+                          setEditCategoryID(c._id);
+                        }}
                       >
                         Edit
                       </Button>
@@ -178,6 +191,36 @@ export default function Categories() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* edit modal; onClose closes modal when periphery clicked */}
+      <Dialog open={openEditModal} onClose={() => setOpenEditModal(false)}>
+        <DialogTitle>Edit Category</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Name"
+            variant="outlined"
+            sx={{ width: "100%", marginTop: "15px" }}
+            value={editCategoryName}
+            onChange={(e) => setEditCategoryName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenEditModal(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              updateCategoryMutation.mutate({
+                _id: editCategoryID,
+                name: editCategoryName,
+                token,
+              });
+            }}
+          >
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000";
+import { url } from "./data";
 
 export const getCategories = async () => {
   const res = await axios.get(`${url}/categories`);
@@ -19,7 +19,7 @@ export const addCategory = async (data) => {
 
 export const updateCategory = async (data) => {
   const res = await axios.put(
-    `${url}/categories/${data.id}`,
+    `${url}/categories/${data._id}`,
     JSON.stringify(data),
     {
       headers: {

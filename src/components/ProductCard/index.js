@@ -87,7 +87,10 @@ export default function ProductCard({ product }) {
         </Typography>
         <Box display="flex" justifyContent="space-between" sx={{ my: 3 }}>
           <Chip label={`$ ${price}`} color="success" />
-          <Chip label={category} color="warning" />
+          <Chip
+            label={category && category.name ? category.name : ""}
+            color="warning"
+          />
         </Box>
         <Button
           fullWidth
